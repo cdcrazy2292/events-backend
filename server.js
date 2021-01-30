@@ -17,7 +17,7 @@ MongoClient.connect(mongoDbString, {useUnifiedTopology: true}) // Establishing a
         const db = client.db('tech-ia') // importing my database by name
         const eventsCollection = db.collection('events') // accessing collection in database by name
 
-        app.listen(3000, function () {
+        app.listen(4000, function () {
             // Starting up the server on port 3000
             console.log(`Dayana's server is working on 3000`)
         })

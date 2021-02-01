@@ -2,6 +2,7 @@
  * Adding external libraries to use in this app
  */
 const express = require('express'); // server
+var cors = require('cors'); // importing cors library to make server work locally
 const bodyParser = require('body-parser') // helper to parse requests
 const MongoClient = require('mongodb').MongoClient // library that connects toMongoDB
 const app = express(); // Creates express app
@@ -11,6 +12,7 @@ const ObjectID = require('mongodb').ObjectID; // Helper to look up events by ID
 const mongoDbString = `mongodb+srv://server-user:3x0ijnzjUjYfRqfo@cluster0.zcueb.mongodb.net/tech-ia?retryWrites=true&w=majority` // URL that connects to my DB
 MongoClient.connect(mongoDbString, {useUnifiedTopology: true}) // Establishing a connection
     .then(client => {
+        app.use(cors())
         app.use(bodyParser.urlencoded({extended: true})) // Using url parser helper
         app.use(bodyParser.json()) // Using json parser helper
         console.log('Connected to Database') // Printing useful msg
@@ -19,7 +21,7 @@ MongoClient.connect(mongoDbString, {useUnifiedTopology: true}) // Establishing a
 
         app.listen(4000, function () {
             // Starting up the server on port 3000
-            console.log(`Dayana's server is working on 3000`)
+            console.log(`Dayana's server is working on 4000`)
         })
 
         /**
@@ -55,7 +57,7 @@ MongoClient.connect(mongoDbString, {useUnifiedTopology: true}) // Establishing a
         app.put('/update-event', (req, res) => {
             const event = req.body // simplifying object by extracting body into a variable
             eventsCollection.findOneAndUpdate( // Using mongoDb library to find an event by its ID and update it
-                {_id: new ObjectID(event.id)}, // Using the filer object to find an event
+                {_id: new ObjectID(event._id)}, // Using the filer object to find an event
                 {  // update object that takes the data to be changed
                     $set: {
                         name: event.name,
@@ -68,6 +70,7 @@ MongoClient.connect(mongoDbString, {useUnifiedTopology: true}) // Establishing a
                     upsert: false // Disabling the action of inserting an event if the above ID doesn't exist
                 }
             ).then(result => {
+                console.log(result)
                 res.status(200).send(result) // Sending results to client
             }).catch(error => {
                 console.error(error)
